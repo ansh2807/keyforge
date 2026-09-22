@@ -1,0 +1,13 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "keyforge-client"
+version = "1.0.0"
+description = "Verified Python client for Keyforge"
+requires-python = ">=3.11"
+dependencies = ["cryptography>=42.0"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["keyforge"]

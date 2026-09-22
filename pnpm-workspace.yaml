@@ -1,0 +1,7 @@
+allowBuilds:
+  "@node-rs/argon2": true
+  "@prisma/client": true
+  "@prisma/engines": true
+  esbuild: true
+  prisma: true
+  unrs-resolver: true

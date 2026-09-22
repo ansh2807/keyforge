@@ -1,0 +1,17 @@
+node_modules
+.next
+.env
+.env.local
+coverage
+*.log
+.DS_Store
+dev.db
+dev.db-journal
+*.tsbuildinfo
+.keyforge-bootstrap.json
+data/
+backups/
+bin/
+obj/
+__pycache__/
+*.pyc

@@ -1,0 +1,92 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: keyforge
+      POSTGRES_USER: keyforge
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+    volumes:
+      - keyforge_postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U keyforge -d keyforge"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    ports:
+      - "127.0.0.1:5432:5432"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://keyforge:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}@postgres:5432/keyforge?schema=public
+      KEYFORGE_MASTER_KEY: ${KEYFORGE_MASTER_KEY:?Set KEYFORGE_MASTER_KEY}
+      KEYFORGE_BASE_URL: ${KEYFORGE_BASE_URL:?Set KEYFORGE_BASE_URL}
+      KEYFORGE_SESSION_DAYS: ${KEYFORGE_SESSION_DAYS:-7}
+      KEYFORGE_STORAGE_DIR: /app/data/files
+      KEYFORGE_MAX_UPLOAD_MB: ${KEYFORGE_MAX_UPLOAD_MB:-50}
+      KEYFORGE_RP_ID: ${KEYFORGE_RP_ID:?Set KEYFORGE_RP_ID}
+      KEYFORGE_RP_NAME: ${KEYFORGE_RP_NAME:-Keyforge}
+      KEYFORGE_RP_ORIGIN: ${KEYFORGE_RP_ORIGIN:?Set KEYFORGE_RP_ORIGIN}
+      KEYFORGE_SMTP_HOST: ${KEYFORGE_SMTP_HOST:-}
+      KEYFORGE_SMTP_PORT: ${KEYFORGE_SMTP_PORT:-465}
+      KEYFORGE_SMTP_SECURE: ${KEYFORGE_SMTP_SECURE:-true}
+      KEYFORGE_SMTP_USER: ${KEYFORGE_SMTP_USER:-}
+      KEYFORGE_SMTP_PASSWORD: ${KEYFORGE_SMTP_PASSWORD:-}
+      KEYFORGE_SMTP_FROM: ${KEYFORGE_SMTP_FROM:-}
+      NODE_ENV: production
+    volumes:
+      - keyforge_files:/app/data/files
+    ports:
+      - "127.0.0.1:3000:3000"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/api/health/ready"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+  caddy:
+    image: caddy:2.10-alpine
+    restart: unless-stopped
+    profiles: ["public"]
+    depends_on:
+      app:
+        condition: service_healthy
+    environment:
+      KEYFORGE_DOMAIN: ${KEYFORGE_DOMAIN:?Set KEYFORGE_DOMAIN}
+      KEYFORGE_LEGACY_DOMAIN: ${KEYFORGE_LEGACY_DOMAIN:-auth.paradoxworld.cc}
+      ACME_EMAIL: ${ACME_EMAIL:?Set ACME_EMAIL}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+volumes:
+  keyforge_postgres:
+  keyforge_files:
+  caddy_data:
+  caddy_config:
