@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: keyforge
+          POSTGRES_USER: keyforge
+          POSTGRES_PASSWORD: ci-password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U keyforge -d keyforge"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      DATABASE_URL: postgresql://keyforge:ci-password@localhost:5432/keyforge?schema=public
+      KEYFORGE_MASTER_KEY: AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=
+      KEYFORGE_BASE_URL: http://localhost:3000
+      KEYFORGE_STORAGE_DIR: ./data/files
+      KEYFORGE_RP_ID: localhost
+      KEYFORGE_RP_ORIGIN: http://localhost:3000
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm db:deploy
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm sdk:build
+      - run: pnpm build
+
+  native-sdks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+      - run: python -m compileall -q sdk/python/keyforge
+      - run: dotnet build sdk/csharp/Keyforge.Client.csproj -c Release
+      - run: mvn --batch-mode --file sdk/java/pom.xml verify
+      - run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev libssl-dev nlohmann-json3-dev
+      - run: cmake -S sdk/cpp -B sdk/cpp/build -DCMAKE_BUILD_TYPE=Release
+      - run: cmake --build sdk/cpp/build --config Release --parallel 2

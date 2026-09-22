@@ -1,0 +1,28 @@
+{
+  email {$ACME_EMAIL}
+  admin off
+}
+
+{$KEYFORGE_DOMAIN} {
+  encode zstd gzip
+  reverse_proxy app:3000 {
+    health_uri /api/health/live
+    header_up X-Real-IP {remote_host}
+  }
+  header {
+    -Server
+    Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    X-Content-Type-Options "nosniff"
+    X-Frame-Options "DENY"
+    Referrer-Policy "strict-origin-when-cross-origin"
+    Permissions-Policy "camera=(), microphone=(), geolocation=()"
+  }
+  log {
+    output stdout
+    format json
+  }
+}
+
+{$KEYFORGE_LEGACY_DOMAIN} {
+  redir https://{$KEYFORGE_DOMAIN}{uri} permanent
+}

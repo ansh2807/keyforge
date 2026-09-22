@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 360" width="1200" height="360" role="img" aria-label="Keyforge — self-hosted software licensing and authentication">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0e131b"/>
+      <stop offset="0.5" stop-color="#161d29"/>
+      <stop offset="1" stop-color="#0b0f16"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffd76a"/>
+      <stop offset="0.5" stop-color="#f5a623"/>
+      <stop offset="1" stop-color="#e07b1a"/>
+    </linearGradient>
+    <radialGradient id="ember" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ffb347" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#ffb347" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="7"/></filter>
+    <style>
+      .title { font-family:'Segoe UI',system-ui,sans-serif; font-weight:800; fill:#f4f7fb; }
+      .sub   { font-family:'Segoe UI',system-ui,sans-serif; font-weight:500; fill:#9fb0c6; }
+      .chip  { font-family:'Segoe UI',system-ui,sans-serif; font-weight:700; fill:#0e131b; }
+      .chip2 { font-family:'Segoe UI',system-ui,sans-serif; font-weight:700; fill:#cdd8e6; }
+      .keyrot{ transform-box:fill-box; transform-origin:center; animation:sway 5s ease-in-out infinite; }
+      .keyglow{ animation:pulse 3s ease-in-out infinite; }
+      .ember { transform-box:fill-box; transform-origin:center; animation:fly 3.6s ease-in infinite; opacity:0; }
+      .e2{animation-delay:.5s}.e3{animation-delay:1s}.e4{animation-delay:1.6s}.e5{animation-delay:2.2s}.e6{animation-delay:2.8s}
+      .ring { stroke-dasharray:8 10; animation:spin 14s linear infinite; transform-box:fill-box; transform-origin:center; }
+      .titleIn{opacity:0; animation:rise .9s ease-out .2s forwards;}
+      .subIn{opacity:0; animation:rise .9s ease-out .5s forwards;}
+      .chipG{opacity:0; animation:rise .8s ease-out forwards;}
+      .c2{animation-delay:.7s}.c3{animation-delay:.85s}.c4{animation-delay:1s}.c5{animation-delay:1.15s}
+      @keyframes sway  {0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+      @keyframes pulse {0%,100%{opacity:.4}50%{opacity:1}}
+      @keyframes fly   {0%{transform:translate(0,0) scale(1);opacity:0}15%{opacity:1}100%{transform:translate(30px,-120px) scale(.2);opacity:0}}
+      @keyframes spin  {to{transform:rotate(360deg)}}
+      @keyframes rise  {from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+      @media (prefers-reduced-motion: reduce){ .keyrot,.keyglow,.ember,.ring,.titleIn,.subIn,.chipG{animation:none;opacity:1} }
+    </style>
+  </defs>
+
+  <rect width="1200" height="360" fill="url(#bg)"/>
+  <circle class="keyglow" cx="215" cy="180" r="150" fill="url(#ember)"/>
+
+  <!-- forge embers -->
+  <circle class="ember"    cx="215" cy="250" r="4" fill="#ffcf6b"/>
+  <circle class="ember e2" cx="240" cy="250" r="3" fill="#ffb347"/>
+  <circle class="ember e3" cx="195" cy="250" r="5" fill="#ff9f43"/>
+  <circle class="ember e4" cx="225" cy="250" r="3" fill="#ffcf6b"/>
+  <circle class="ember e5" cx="205" cy="250" r="4" fill="#ffb347"/>
+  <circle class="ember e6" cx="250" cy="250" r="3" fill="#ff9f43"/>
+
+  <!-- orbit ring + key -->
+  <circle class="ring" cx="215" cy="180" r="120" fill="none" stroke="#3a4658" stroke-width="2"/>
+  <g class="keyrot" transform="translate(215,180)">
+    <g transform="translate(-14,-58)">
+      <circle cx="14" cy="18" r="30" fill="none" stroke="url(#gold)" stroke-width="12"/>
+      <rect x="8" y="44" width="12" height="70" rx="4" fill="url(#gold)"/>
+      <rect x="8" y="92" width="30" height="11" rx="3" fill="url(#gold)"/>
+      <rect x="8" y="110" width="22" height="11" rx="3" fill="url(#gold)"/>
+    </g>
+  </g>
+
+  <!-- headline -->
+  <g transform="translate(430,116)">
+    <text class="title titleIn" x="0" y="0" font-size="74" letter-spacing="-1.5">Keyforge</text>
+    <text class="sub subIn" x="2" y="44" font-size="24">Self-hosted software licensing &amp; authentication.</text>
+    <text class="sub subIn" x="2" y="76" font-size="18" opacity="0.85">Licenses · devices · subscriptions · Ed25519-signed responses · SDKs for 5 languages.</text>
+
+    <g transform="translate(2,108)">
+      <g class="chipG">   <rect x="0"   y="0" width="132" height="34" rx="17" fill="url(#gold)"/><text class="chip"  x="66"  y="22" text-anchor="middle" font-size="14">KeyAuth-compatible</text></g>
+      <g class="chipG c2"><rect x="144" y="0" width="92"  height="34" rx="17" fill="none" stroke="#3a4658" stroke-width="1.5"/><text class="chip2" x="190" y="22" text-anchor="middle" font-size="14">Ed25519</text></g>
+      <g class="chipG c3"><rect x="248" y="0" width="92"  height="34" rx="17" fill="none" stroke="#3a4658" stroke-width="1.5"/><text class="chip2" x="294" y="22" text-anchor="middle" font-size="14">Argon2id</text></g>
+      <g class="chipG c4"><rect x="352" y="0" width="86"  height="34" rx="17" fill="none" stroke="#3a4658" stroke-width="1.5"/><text class="chip2" x="395" y="22" text-anchor="middle" font-size="14">Next.js</text></g>
+      <g class="chipG c5"><rect x="450" y="0" width="104" height="34" rx="17" fill="none" stroke="#3a4658" stroke-width="1.5"/><text class="chip2" x="502" y="22" text-anchor="middle" font-size="14">PostgreSQL</text></g>
+    </g>
+  </g>
+</svg>

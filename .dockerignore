@@ -1,0 +1,14 @@
+.git
+.github
+.next
+.env
+.env.*
+!.env.example
+node_modules
+backups
+data
+*.log
+*.tsbuildinfo
+sdk/csharp/bin
+sdk/csharp/obj
+sdk/python/**/__pycache__
