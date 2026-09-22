@@ -33,7 +33,7 @@ jobs:
       KEYFORGE_RP_ID: localhost
       KEYFORGE_RP_ORIGIN: http://localhost:3000
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v4
         with:
           version: 11.19.0
@@ -51,7 +51,7 @@ jobs:
   native-sdks:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
